@@ -1,0 +1,138 @@
+{#{% extends 'main.html' %}#}
+{#{% load static %}#}
+{#{% block content %}#}
+{##}
+{#    <main>#}
+{#        <section id="form-container">#}
+{#            <img id="logo" src="{% static 'images/meetme.png' %}">#}
+{##}
+{#            <div id="welcome-message">#}
+{#                <h1>Welcome to WeChat</h1>#}
+{#                <p>A group video calling platform made just for you ...!!! </p>#}
+{#            </div>#}
+{##}
+{#            <form id="form">#}
+{#                <div class="form-field">#}
+{#                    #}
+{#                    <input type="text" name="room" placeholder="Enter the room name here"#}
+{#                           style="text-transform:uppercase "/>#}
+{#                </div>#}
+{#                #}
+{#                <div class="form-field">#}
+{#                    #}
+{#                    <input type="text" name="user" placeholder="Enter your name here"#}
+{#                           style="text-transform:uppercase "/>#}
+{#                </div>#}
+{##}
+{#                <div class="form-field">#}
+{#                    <input type="submit" value="Join Stream"/>#}
+{#                </div>#}
+{#            </form>#}
+{#        </section>#}
+{#    </main>#}
+{##}
+{#        <script>#}
+{#            let form = document.getElementById('form');#}
+{##}
+{#            let handlesubmit = async (e) => {#}
+{#                e.preventDefault();#}
+{#                let room = e.target.room.value.toUpperCase()#}
+{#                let name = e.target.username.value#}
+{##}
+{#                let response = await fetch(`/get_token/?channel=${room}`)#}
+{#                let data = await response.json()#}
+{##}
+{#                let UID = data.uid#}
+{#                let token = data.token#}
+{##}
+{#                sessionStorage.setItem('UID', UID)#}
+{#                sessionStorage.setItem('token', token)#}
+{#                sessionStorage.setItem('room', room)#}
+{#                sessionStorage.setItem('name', name)#}
+{##}
+{#                window.open('/room/', '_self');#}
+{#            };#}
+{##}
+{#            form.addEventListener('submit', handlesubmit);#}
+{#        </script>#}
+{##}
+{#{% endblock content %}#}
+
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+    <main>
+        <section id="form-container">
+            <img id="logo" src="{% static 'images/meetme.png' %}">
+
+            <div id="welcome-message">
+                <h1>Welcome to VidCall</h1>
+                <p>A group video calling platform made just for you ...!!! </p>
+            </div>
+
+            <form id="form">
+                <div class="form-field">
+                    <input type="text" name="room" placeholder="Enter the room name here"
+                           style="text-transform:uppercase"/>
+                </div>
+
+                <div class="form-field">
+                    <input type="text" name="username" placeholder="Enter your name here"
+                           style="text-transform:uppercase"/>
+                </div>
+
+                <div class="form-field">
+                    <input type="submit" value="Join Stream"/>
+                </div>
+
+                <div id="developer-info">
+                    <p>Developed by <strong> Rohith Kumar Pabba</strong></p>
+                    <p>Contact <a href="mailto:rohithguptha135@gmail.com" class="blink">rohithguptha135@gmail.com</a></p>
+                </div>
+          
+            </form>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let form = document.getElementById('form');
+
+            let handlesubmit = async (e) => {
+                e.preventDefault();
+
+                // Check if the input fields exist
+                if (!e.target.room || !e.target.username) {
+                    console.error('Room or username field is missing.');
+                    return;
+                }
+
+                let room = e.target.room.value.toUpperCase();
+                let name = e.target.username.value;
+
+                try {
+                    let response = await fetch(`/get_token/?channel=${room}`);
+                    if (!response.ok) throw new Error('Network response was not ok');
+
+                    let data = await response.json();
+                    let UID = data.uid;
+                    let token = data.token;
+
+                    sessionStorage.setItem('UID', UID);
+                    sessionStorage.setItem('token', token);
+                    sessionStorage.setItem('room', room);
+                    sessionStorage.setItem('name', name);
+
+                    window.open('/room/', '_self');
+                } catch (error) {
+                    console.error('Error fetching token:', error);
+                }
+            };
+
+            form.addEventListener('submit', handlesubmit);
+        });
+    </script>
+
+{% endblock content %}
+
